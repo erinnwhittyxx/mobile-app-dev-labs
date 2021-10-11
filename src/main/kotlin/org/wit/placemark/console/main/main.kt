@@ -1,8 +1,16 @@
 package org.wit.placemark.console.main
 
 import mu.KotlinLogging
+import org.wit.placemark.console.controllers.PlacemarkController
+import org.wit.placemark.console.models.PlacemarkMemStore
+import org.wit.placemark.console.models.PlacemarkModel
+import org.wit.placemark.console.views.PlacemarkView
 
 private val logger = KotlinLogging.logger {}
+
+val placemarks = PlacemarkMemStore()
+val placemarkView = PlacemarkView()
+val controller = PlacemarkController()
 
 fun main(args: Array<String>) {
     logger.info { "Launching Placemark Console App" }
@@ -11,11 +19,13 @@ fun main(args: Array<String>) {
     var input: Int
 
     do {
-        input = menu()
+        input = placemarkView.menu()
         when(input) {
             1 -> addPlacemark()
             2 -> updatePlacemark()
-            3 -> listPlacemarks()
+            3 -> placemarkView.listPlacemarks(placemarks)
+            4 -> searchPlacemark()
+            -99 -> dummyData()
             -1 -> println("Exiting App")
             else -> println("Invalid Option")
         }
@@ -24,40 +34,47 @@ fun main(args: Array<String>) {
     logger.info { "Shutting Down Placemark Console App" }
 }
 
-fun menu() : Int {
-
-    var option : Int
-    var input: String? = null
-
-    println("MAIN MENU")
-    println(" 1. Add Placemark")
-    println(" 2. Update Placemark")
-    println(" 3. List All Placemarks")
-    println("-1. Exit")
-    println()
-    print("Enter an integer : ")
-    input = readLine()!!
-    option = if (input.toIntOrNull() != null && !input.isEmpty())
-        input.toInt()
-    else
-        -9
-    return option
-}
-
 fun addPlacemark(){
-    var title : String
+    var aPlacemark = PlacemarkModel()
 
-    println("Add Placemark")
-    println()
-    print("Enter a Title : ")
-    title = readLine()!!
-    println("You entered $title for title")
+    if (placemarkView.addPlacemarkData(aPlacemark))
+        placemarks.create(aPlacemark)
+    else
+        logger.info("Placemark Not Added")
 }
 
 fun updatePlacemark() {
-    println("You Chose Update Placemark")
+
+    placemarkView.listPlacemarks(placemarks)
+    var searchId = placemarkView.getId()
+    val aPlacemark = search(searchId)
+
+    if(aPlacemark != null) {
+        if(placemarkView.updatePlacemarkData(aPlacemark)) {
+            placemarks.update(aPlacemark)
+            placemarkView.showPlacemark(aPlacemark)
+            logger.info("Placemark Updated : [ $aPlacemark ]")
+        }
+        else
+            logger.info("Placemark Not Updated")
+    }
+    else
+        println("Placemark Not Updated...")
 }
 
-fun listPlacemarks() {
-    println("You Chose List All Placemarks")
+fun searchPlacemark() {
+    val aPlacemark = search(placemarkView.getId())!!
+    placemarkView.showPlacemark(aPlacemark)
+}
+
+
+fun search(id: Long) : PlacemarkModel? {
+    var foundPlacemark = placemarks.findOne(id)
+    return foundPlacemark
+}
+
+fun dummyData() {
+    placemarks.create(PlacemarkModel(title = "New York New York", description = "So Good They Named It Twice"))
+    placemarks.create(PlacemarkModel(title= "Ring of Kerry", description = "Some place in the Kingdom"))
+    placemarks.create(PlacemarkModel(title = "Waterford City", description = "You get great Blaas Here!!"))
 }

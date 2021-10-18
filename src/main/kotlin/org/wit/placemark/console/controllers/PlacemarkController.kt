@@ -10,7 +10,7 @@ class PlacemarkController {
 
     fun start()
     {
-        org.wit.placemark.console.main.logger.info { "Launching Placemark Console App" }
+        logger.info { "Launching Placemark Console App" }
         println("Placemark Kotlin App Version 1.0")
 
         var input: Int
@@ -28,7 +28,7 @@ class PlacemarkController {
             }
             println()
         } while (input != -1)
-        org.wit.placemark.console.main.logger.info { "Shutting Down Placemark Console App" }
+        logger.info { "Shutting Down Placemark Console App" }
     }
 
     val placemarks = PlacemarkMemStore()
@@ -42,10 +42,6 @@ class PlacemarkController {
             placemarks.create(aPlacemark)
         else
             logger.info("Placemark Not Added")
-    }
-
-    fun list() {
-        placemarkView.listPlacemarks(placemarks)
     }
 
     fun update() {
@@ -71,7 +67,6 @@ class PlacemarkController {
         val aPlacemark = search(placemarkView.getId())!!
         placemarkView.showPlacemark(aPlacemark)
     }
-
 
     fun search(id: Long) : PlacemarkModel? {
         var foundPlacemark = placemarks.findOne(id)

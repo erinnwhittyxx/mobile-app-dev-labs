@@ -1,22 +1,39 @@
 package org.wit.placemark.console.controllers
 
 import mu.KotlinLogging
+import org.wit.placemark.console.main.controller
 import org.wit.placemark.console.models.PlacemarkMemStore
 import org.wit.placemark.console.models.PlacemarkModel
 import org.wit.placemark.console.views.PlacemarkView
 
 class PlacemarkController {
 
+    fun start()
+    {
+        org.wit.placemark.console.main.logger.info { "Launching Placemark Console App" }
+        println("Placemark Kotlin App Version 1.0")
+
+        var input: Int
+
+        do {
+            input = placemarkView.menu()
+            when(input) {
+                1 -> controller.add()
+                2 -> controller.update()
+                3 -> placemarkView.listPlacemarks(placemarks)
+                4 -> controller.search()
+                -99 -> controller.dummyData()
+                -1 -> println("Exiting App")
+                else -> println("Invalid Option")
+            }
+            println()
+        } while (input != -1)
+        org.wit.placemark.console.main.logger.info { "Shutting Down Placemark Console App" }
+    }
+
     val placemarks = PlacemarkMemStore()
     val placemarkView = PlacemarkView()
     val logger = KotlinLogging.logger {}
-
-    init {
-        logger.info { "Launching Placemark Console App" }
-        println("Placemark Kotlin App Version 1.0")
-    }
-
-    fun menu() :Int { return placemarkView.menu() }
 
     fun add(){
         var aPlacemark = PlacemarkModel()

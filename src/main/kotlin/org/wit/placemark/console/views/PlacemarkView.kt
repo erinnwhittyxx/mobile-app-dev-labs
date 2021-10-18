@@ -1,7 +1,5 @@
 package org.wit.placemark.console.views
 
-import org.wit.placemark.console.main.placemarkView
-import org.wit.placemark.console.main.placemarks
 import org.wit.placemark.console.models.PlacemarkMemStore
 import org.wit.placemark.console.models.PlacemarkModel
 
@@ -17,6 +15,7 @@ class PlacemarkView {
         println(" 2. Update Placemark")
         println(" 3. List All Placemarks")
         println(" 4. Search Placemarks")
+        println("-99. For Dummy Data")
         println("-1. Exit")
         println()
         print("Enter Option : ")

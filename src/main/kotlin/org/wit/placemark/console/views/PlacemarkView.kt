@@ -1,5 +1,6 @@
 package org.wit.placemark.console.views
 
+import org.wit.placemark.console.models.PlacemarkJSONStore
 import org.wit.placemark.console.models.PlacemarkMemStore
 import org.wit.placemark.console.models.PlacemarkModel
 
@@ -15,6 +16,7 @@ class PlacemarkView {
         println(" 2. Update Placemark")
         println(" 3. List All Placemarks")
         println(" 4. Search Placemarks")
+        println(" 5. Delete Placemark")
         println("-99. For Dummy Data")
         println("-1. Exit")
         println()
@@ -27,7 +29,7 @@ class PlacemarkView {
         return option
     }
 
-    fun listPlacemarks(placemarks : PlacemarkMemStore) {
+    fun listPlacemarks(placemarks : PlacemarkJSONStore) {
         println("List All Placemarks")
         println()
         placemarks.logAll()
@@ -48,6 +50,7 @@ class PlacemarkView {
         placemark.title = readLine()!!
         print("Enter a Description : ")
         placemark.description = readLine()!!
+
 
         return placemark.title.isNotEmpty() && placemark.description.isNotEmpty()
     }

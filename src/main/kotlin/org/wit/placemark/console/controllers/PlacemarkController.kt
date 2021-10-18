@@ -2,6 +2,7 @@ package org.wit.placemark.console.controllers
 
 import mu.KotlinLogging
 import org.wit.placemark.console.main.controller
+import org.wit.placemark.console.models.PlacemarkJSONStore
 import org.wit.placemark.console.models.PlacemarkMemStore
 import org.wit.placemark.console.models.PlacemarkModel
 import org.wit.placemark.console.views.PlacemarkView
@@ -20,8 +21,9 @@ class PlacemarkController {
             when(input) {
                 1 -> controller.add()
                 2 -> controller.update()
-                3 -> placemarkView.listPlacemarks(placemarks)
+                3 -> controller.list()
                 4 -> controller.search()
+                5 -> controller.delete()
                 -99 -> controller.dummyData()
                 -1 -> println("Exiting App")
                 else -> println("Invalid Option")
@@ -31,7 +33,7 @@ class PlacemarkController {
         logger.info { "Shutting Down Placemark Console App" }
     }
 
-    val placemarks = PlacemarkMemStore()
+    val placemarks = PlacemarkJSONStore()
     val placemarkView = PlacemarkView()
     val logger = KotlinLogging.logger {}
 
@@ -42,6 +44,10 @@ class PlacemarkController {
             placemarks.create(aPlacemark)
         else
             logger.info("Placemark Not Added")
+    }
+
+    fun list() {
+        placemarkView.listPlacemarks(placemarks)
     }
 
     fun update() {
@@ -61,6 +67,19 @@ class PlacemarkController {
         }
         else
             println("Placemark Not Updated...")
+    }
+
+    fun delete() {
+        placemarkView.listPlacemarks(placemarks)
+        var searchId = placemarkView.getId()
+        val aPlacemark = search(searchId)
+
+        if(aPlacemark != null) {
+            placemarks.delete(aPlacemark)
+            println("Placemark Deleted...")
+        }
+        else
+            println("Placemark Not Deleted...")
     }
 
     fun search() {
